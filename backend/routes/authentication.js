@@ -2,11 +2,15 @@
 
 /** Routes for authentication. */
 
-import jsonschema from "jsonschema";
 import User from "../models/user.js";
-import userRegisterSchema from "../schemas/userRegister.json" assert { type: "json" };
+// import userRegisterSchema from "../schemas/userRegister.json" assert { type: "json" };
+import {
+  userRegisterSchema,
+  userLoginSchema,
+} from "../schemas/userValidationSchemas.js";
 import { BadRequestError } from "../expressError.js";
 import express from "express";
+import { createToken } from "../helpers/tokens.js";
 
 // const jsonschema = require("jsonschema");
 
@@ -20,7 +24,7 @@ const router = new express.Router();
 // const userRegisterSchema = require("../schemas/userRegister.json");
 // const { BadRequestError } = require("../expressError");
 
-/** POST /auth/token:  { username, password } => { token }
+/** POST /auth/login:  { username, password } => { token }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
@@ -29,16 +33,22 @@ const router = new express.Router();
 
 router.post("/login", async function (req, res, next) {
   try {
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map((e) => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
+    // validate data:
+    const { error, value } = userLoginSchema.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      const { details } = error;
+      const message = details.map((i) => i.message).join(",");
+      console.log("error", message);
+      throw new BadRequestError(message);
+    }
 
+    // if both username and password present:
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
-    // const token = createToken(user);
-    return res.json({ msg: "logged in" });
+    const token = createToken(user);
+    return res.json({ token });
   } catch (err) {
     return next(err);
   }
@@ -57,15 +67,21 @@ router.post("/login", async function (req, res, next) {
 
 router.post("/register", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, userRegisterSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map((e) => e.stack);
-      throw new BadRequestError(errs);
+    // validate data:
+    const { error, value } = userRegisterSchema.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      const { details } = error;
+      const message = details.map((i) => i.message).join(",");
+      console.log("error", message);
+      throw new BadRequestError(message);
     }
 
+    // if passes validation, register user and return token:
     const newUser = await User.register({ ...req.body, isAdmin: false });
-    // const token = createToken(newUser);
-    return res.status(201).json({ newUser });
+    const token = createToken(newUser);
+    return res.status(201).json({ token });
   } catch (err) {
     return next(err);
   }

@@ -150,11 +150,6 @@ class User {
 
     const { setCols, values } = partialUpdateSQL(data);
 
-    console.log("set", setCols);
-    console.log("values", values);
-
-    //
-
     const usernameVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users
