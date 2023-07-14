@@ -18,6 +18,28 @@ beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
+/************************************** new   */
+
+describe("new", function () {
+  test("works", async function () {
+    const book = await Book.new({
+      title: "New Book",
+      username: "u2",
+    });
+    expect(book).toEqual({
+      id: expect.any(Number),
+      title: "New Book",
+      username: "u2",
+    });
+  });
+  test("notFound error with non-existing user", async function () {
+    try {
+      await Book.new({ title: "new book", username: "fakeusername" });
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
 
 /************************************** getAll ✓ 1/1  */
 

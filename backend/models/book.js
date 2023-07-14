@@ -7,16 +7,38 @@
 "use strict";
 
 import db from "../db.js";
-import bcrypt from "bcrypt";
-import {
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
-} from "../expressError.js";
+import { NotFoundError } from "../expressError.js";
 
 /** Related functions for books. */
 
 class Book {
+  /** Make new book (for user)
+   *
+   * accepts {title, username}
+   * returns book => {id, title, username}
+   *
+   */
+
+  static async new({ title, username }) {
+    // check that user exists first:
+    const user = await db.query(
+      `SELECT username
+               FROM users
+               WHERE username = $1`,
+      [username]
+    );
+    if (!user.rows[0]) throw new NotFoundError(`No user: ${username}`);
+
+    // if yes, create new book
+    const result = await db.query(
+      `INSERT INTO books(title, username) 
+      VALUES ($1,$2)
+      RETURNING id, title, username`,
+      [title, username]
+    );
+    return result.rows[0];
+  }
+
   /** Get all books
    *
    * Returns [{ id, title, username }, ...]
