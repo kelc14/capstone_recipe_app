@@ -2,18 +2,24 @@
 
 /** Express app for whisk. */
 
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import { NotFoundError } from "./expressError.js";
 
-const { NotFoundError } = require("./expressError");
+import { router as authenticationRoutes } from "./routes/authentication.js";
+import { router as userRoutes } from "./routes/users.js";
+
+import morgan from "morgan";
+
+// const express = require("express");
+// const cors = require("cors");
+// const { NotFoundError } = require("./expressError");
 
 // const { authenticateJWT } = require("./middleware/auth");
-// const authRoutes = require("./routes/auth");
-// const companiesRoutes = require("./routes/companies");
-// const usersRoutes = require("./routes/users");
-// const jobsRoutes = require("./routes/jobs");
+// const authenticationRoutes = require("./routes/authentication");
+// const userRoutes = require("./routes/users");
 
-const morgan = require("morgan");
+// const morgan = require("morgan");
 
 const app = express();
 
@@ -22,10 +28,8 @@ app.use(express.json());
 app.use(morgan("tiny"));
 // app.use(authenticateJWT);
 
-// app.use("/auth", authRoutes);
-// app.use("/card", cardRoutes);
-// app.use("/user", userRoutes);
-// app.use("/jobs", jobsRoutes);
+app.use("/auth", authenticationRoutes);
+app.use("/user", userRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
@@ -43,4 +47,6 @@ app.use(function (err, req, res, next) {
   });
 });
 
-module.exports = app;
+// module.exports = app;
+
+export default app;

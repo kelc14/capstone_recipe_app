@@ -6,7 +6,7 @@ CREATE DATABASE whisk;
 \connect whisk
 
 \i whisk-schema.sql
--- \i whisk-seed.sql
+\i whisk-seed.sql
 
 \echo 'Delete and recreate whisk_test db?'
 \prompt 'Return for yes or control-C to cancel > ' foo

@@ -1,23 +1,27 @@
 "use strict";
 /** Database setup for whisk. */
-const { Client } = require("pg");
-const { getDatabaseUri } = require("./config");
+// const { Client } = require("pg");
+import { getDatabaseUri } from "./config.js";
 
-let db;
+import pkg from "pg";
+const { Client } = pkg;
 
-if (process.env.NODE_ENV === "production") {
-  db = new Client({
-    connectionString: getDatabaseUri(),
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
-} else {
-  db = new Client({
-    connectionString: getDatabaseUri(),
-  });
-}
+const db = new Client({
+  host: "localhost",
+  port: 5432,
+  database: getDatabaseUri(),
+  user: "kelseyguffanti",
+});
 
 db.connect();
 
-module.exports = db;
+// const Pool = require("pg").Pool;
+// const db = new Pool({
+//   user: "kelseyguffanti",
+//   host: "localhost",
+//   database: getDatabaseUri(),
+//   //   password: "password",
+//   port: 5432,
+// });
+
+export default db;
