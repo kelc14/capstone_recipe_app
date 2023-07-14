@@ -2,6 +2,7 @@
 
 import db from "../db";
 import User from "../models/user";
+import { createToken } from "../helpers/tokens";
 
 async function commonBeforeAll() {
   await db.query(
@@ -46,4 +47,16 @@ async function commonAfterAll() {
   await db.end();
 }
 
-export { commonBeforeAll, commonBeforeEach, commonAfterEach, commonAfterAll };
+const u1Token = createToken({ username: "u1", isAdmin: false });
+const u2Token = createToken({ username: "u2", isAdmin: true });
+const u3Token = createToken({ username: "u3", isAdmin: false });
+
+export {
+  commonBeforeAll,
+  commonBeforeEach,
+  commonAfterEach,
+  commonAfterAll,
+  u1Token,
+  u2Token,
+  u3Token,
+};

@@ -3,7 +3,6 @@
 /** Routes for authentication. */
 
 import User from "../models/user.js";
-// import userRegisterSchema from "../schemas/userRegister.json" assert { type: "json" };
 import {
   userRegisterSchema,
   userLoginSchema,
@@ -12,17 +11,7 @@ import { BadRequestError } from "../expressError.js";
 import express from "express";
 import { createToken } from "../helpers/tokens.js";
 
-// const jsonschema = require("jsonschema");
-
-// const User = require("../models/user");
-// const express = require("express");
-
 const router = new express.Router();
-
-// const { createToken } = require("../helpers/tokens");
-// const userAuthSchema = require("../schemas/userAuth.json");
-// const userRegisterSchema = require("../schemas/userRegister.json");
-// const { BadRequestError } = require("../expressError");
 
 /** POST /auth/login:  { username, password } => { token }
  *

@@ -8,7 +8,7 @@ import { NotFoundError } from "./expressError.js";
 
 import { router as authenticationRoutes } from "./routes/authentication.js";
 import { router as userRoutes } from "./routes/users.js";
-
+import { authenticateJWT } from "./middleware/auth.js";
 import morgan from "morgan";
 
 // const express = require("express");
@@ -26,7 +26,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
-// app.use(authenticateJWT);
+app.use(authenticateJWT);
 
 app.use("/auth", authenticationRoutes);
 app.use("/user", userRoutes);
