@@ -28,9 +28,8 @@ const userLoginSchema = Joi.object({
 });
 
 /**  userNewSchema => Schema for registering new users
- *            via admin POST/users endpoint
- *
- * isAdmin IS allowed
+ *            via admin POST/user endpoint
+ * ONLY CAN BE DONE BY ADMIN - isAdmin is allowed
  *
  */
 
@@ -45,4 +44,19 @@ const userNewSchema = Joi.object({
   isAdmin: Joi.boolean(),
 });
 
-export { userRegisterSchema, userLoginSchema, userNewSchema };
+/**  userUpdateSchema => Schema for updating  users
+ *            via admin PATCH/user/:username endpoint
+ *
+ */
+
+const userUpdateSchema = Joi.object({
+  password: Joi.string().min(8).max(64),
+  firstName: Joi.string().min(1).max(30),
+  lastName: Joi.string().min(1).max(30),
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net"] },
+  }),
+});
+
+export { userRegisterSchema, userLoginSchema, userNewSchema, userUpdateSchema };

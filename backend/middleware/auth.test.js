@@ -1,7 +1,7 @@
 "use strict";
 
 import pkg from "jsonwebtoken";
-const { sign, decode, verify } = pkg;
+const { sign } = pkg;
 import { SECRET_KEY } from "../config";
 import { UnauthorizedError } from "../expressError";
 
@@ -15,8 +15,6 @@ const badJwt = sign({ username: "test", isAdmin: false }, "wrong");
 describe("authenticateJWT", function () {
   test("works: via header", function () {
     expect.assertions(2);
-    //there are multiple ways to pass an authorization token, this is how you pass it in the header.
-    //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const req = { headers: { authorization: `Bearer ${testJwt}` } };
     const res = { locals: {} };
     const next = function (err) {

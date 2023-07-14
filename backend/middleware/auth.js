@@ -4,12 +4,8 @@
 
 import pkg from "jsonwebtoken";
 const { sign, decode, verify } = pkg;
-import { SECRET_KEY } from "../config";
-import { UnauthorizedError } from "../expressError";
-
-// const jwt = require("jsonwebtoken");
-// const { SECRET_KEY } = require("../config");
-// const { UnauthorizedError } = require("../expressError");
+import { SECRET_KEY } from "../config.js";
+import { UnauthorizedError } from "../expressError.js";
 
 /** Middleware: Authenticate user.
  *
