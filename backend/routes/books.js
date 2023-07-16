@@ -140,13 +140,21 @@ router.patch("/:id", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: login - this user or admin
  **/
 
-// router.delete("/:username", ensureSelfOrAdmin, async function (req, res, next) {
-//   try {
-//     await User.remove(req.params.username);
-//     return res.json({ deleted: req.params.username });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
+  try {
+    let book = await Book.get(req.params.id);
+    if (!book) return NotFoundError(`No book with id: ${req.params.id}`);
+
+    // check that user matches username from the book or is an Admin >
+    if (res.locals.user.username === book.username || res.locals.user.isAdmin) {
+      const book = await Book.remove(req.params.id);
+      return res.json({ deleted: req.params.id });
+    } else {
+      throw new UnauthorizedError();
+    }
+  } catch (err) {
+    return next(err);
+  }
+});
 
 export { router };

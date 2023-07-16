@@ -234,37 +234,52 @@ describe("PATCH /book/:id", function () {
   });
 });
 
-// /************************************** DELETE /user/:username ✓ 3/3  */
-// describe("DELETE /user/:username", function () {
-//   test("works for admin", async function () {
-//     const response = await request(app)
-//       .delete("/user/u1")
-//       .set("Content-Type", "application/json")
-//       .set("Accept", "application/json")
-//       .set("authorization", `Bearer ${u2Token}`);
+// /************************************** DELETE /book/:id ✓ 3/3  */
+describe("DELETE /book/:id", function () {
+  test("works for admin", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let book = books.rows[0];
 
-//     expect(response.body).toEqual({
-//       deleted: "u1",
-//     });
-//   });
-//   test("works for self", async function () {
-//     const response = await request(app)
-//       .delete("/user/u1")
-//       .set("Content-Type", "application/json")
-//       .set("Accept", "application/json")
-//       .set("authorization", `Bearer ${u1Token}`);
+    // test
+    const response = await request(app)
+      .delete(`/book/${book.id}`)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
 
-//     expect(response.body).toEqual({
-//       deleted: "u1",
-//     });
-//   });
-//   test("unauth for non-self/ non-admin", async function () {
-//     const response = await request(app)
-//       .delete("/user/u1")
-//       .set("Content-Type", "application/json")
-//       .set("Accept", "application/json")
-//       .set("authorization", `Bearer ${u3Token}`);
+    expect(response.body).toEqual({
+      deleted: `${book.id}`,
+    });
+  });
+  test("works for self", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let book = books.rows[0];
 
-//     expect(response.statusCode).toEqual(401);
-//   });
-// });
+    // test
+    const response = await request(app)
+      .delete(`/book/${book.id}`)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u1Token}`);
+
+    expect(response.body).toEqual({
+      deleted: `${book.id}`,
+    });
+  });
+  test("unauth for non-self/ non-admin", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let book = books.rows[0];
+
+    // test
+    const response = await request(app)
+      .delete(`/book/${book.id}`)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u3Token}`);
+
+    expect(response.statusCode).toEqual(401);
+  });
+});
