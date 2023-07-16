@@ -2,6 +2,7 @@
 
 import db from "../db";
 import User from "../models/user";
+import Book from "../models/book";
 import { createToken } from "../helpers/tokens";
 
 async function commonBeforeAll() {
@@ -33,6 +34,9 @@ async function commonBeforeAll() {
     password: "password3",
     isAdmin: false,
   });
+  await Book.new({ title: "book1", username: "u1" });
+  await Book.new({ title: "book2", username: "u1" });
+  await Book.new({ title: "book3", username: "u2" });
 }
 
 async function commonBeforeEach() {

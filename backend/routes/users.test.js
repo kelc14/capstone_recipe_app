@@ -148,6 +148,16 @@ describe("GET /user/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        books: [
+          {
+            id: expect.any(Number),
+            title: "book1",
+          },
+          {
+            id: expect.any(Number),
+            title: "book2",
+          },
+        ],
       },
     });
   });
@@ -163,6 +173,16 @@ describe("GET /user/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        books: [
+          {
+            id: expect.any(Number),
+            title: "book1",
+          },
+          {
+            id: expect.any(Number),
+            title: "book2",
+          },
+        ],
       },
     });
   });

@@ -147,6 +147,16 @@ describe("get(username)", function () {
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      books: [
+        {
+          id: expect.any(Number),
+          title: "book1",
+        },
+        {
+          id: expect.any(Number),
+          title: "book2",
+        },
+      ],
     });
   });
   test("notFound error with non-existing user", async function () {

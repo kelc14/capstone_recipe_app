@@ -8,18 +8,9 @@ import { NotFoundError } from "./expressError.js";
 
 import { router as authenticationRoutes } from "./routes/authentication.js";
 import { router as userRoutes } from "./routes/users.js";
+import { router as bookRoutes } from "./routes/books.js";
 import { authenticateJWT } from "./middleware/auth.js";
 import morgan from "morgan";
-
-// const express = require("express");
-// const cors = require("cors");
-// const { NotFoundError } = require("./expressError");
-
-// const { authenticateJWT } = require("./middleware/auth");
-// const authenticationRoutes = require("./routes/authentication");
-// const userRoutes = require("./routes/users");
-
-// const morgan = require("morgan");
 
 const app = express();
 
@@ -30,6 +21,7 @@ app.use(authenticateJWT);
 
 app.use("/auth", authenticationRoutes);
 app.use("/user", userRoutes);
+app.use("/book", bookRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {

@@ -115,11 +115,21 @@ class User {
 
   static async get(username) {
     const userRes = await db.query(
-      `SELECT username, firstName AS "firstName", lastName AS "lastName", email, isAdmin AS "isAdmin" FROM users
-             WHERE username = $1`,
+      `SELECT u.username, 
+            firstName AS "firstName", 
+            lastName AS "lastName", 
+            email, 
+            isAdmin AS "isAdmin", 
+            json_agg(json_build_object('id', b.id, 'title',b.title)) AS books
+      FROM users AS u
+      LEFT JOIN books as b
+            ON b.username = u.username
+        WHERE u.username = $1
+        GROUP BY u.username`,
       [username]
     );
     const user = userRes.rows[0];
+    console.log(user);
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
