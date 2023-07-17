@@ -107,13 +107,19 @@ class Recipe {
     return recipe;
   }
 
+  /** addRating(uri, username, rating): Given a recipe {uri} get from DB if it exists.
+   *
+   * Returns {id, uri, label, image}
+   *
+   * throws NotFoundError if not found
+   **/
   // ADD USER STAR RATING
   // HOW DO WE CONTROL MULTIPLE INPUTS HERE - CAN WE DO UPDATE AND ADD RATING IN THE SAME FUNCTION? EX. IF THERE ALREADY EXISTS USERRATING - UPDATE INSTEAD OF ADD ?
-  static async addRating(uri, username, rating) {
+  static async addRating({ uri, username, rating }) {
     // check that user did not already leave a rating:
     const result = await db.query(
       `SELECT recipeURI, username, starRating, id
-             FROM recipes
+             FROM ratings
              WHERE recipeURI = $1 AND username = $2`,
       [uri, username]
     );
@@ -124,23 +130,13 @@ class Recipe {
       const results = await db.query(
         `INSERT INTO ratings (recipeURI, username, starRating)
         VALUES ($1,$2,$3)
-        RETURNING id, recipeURI, username, starRating`
+        RETURNING id, recipeURI AS "recipeURI", username, starRating AS "starRating", createdAt AS "createdAt"`,
+        [uri, username, rating]
       );
       userRating = results.rows[0];
     }
     return userRating;
   }
-
-  //   -- tables ratings   (STARS SEPARATE FROM REVIEWS)
-  // CREATE TABLE ratings (
-  //   id INTEGER NOT NULL PRIMARY KEY,
-  //   recipeURI VARCHAR NOT NULL
-  //     REFERENCES recipes ON DELETE CASCADE,
-  //     username VARCHAR(25) NOT NULL
-  //     REFERENCES users ON DELETE CASCADE,
-  //   starRating INTEGER CHECK (starRating >=0),
-  //   createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-  // )
 
   // GET AVG STAR RATING FOR RECIPE
   //

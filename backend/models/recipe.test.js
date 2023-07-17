@@ -13,6 +13,7 @@ import {
   commonAfterAll,
 } from "./_testCommon.js";
 import Recipe from "./recipe";
+import { date } from "joi";
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -79,4 +80,31 @@ describe("get single recipe", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
+});
+
+/************************************** addRating(uri, username, rating) TEST PASSED  */
+describe("add recipe rating for user", function () {
+  test("works", async function () {
+    let data = {
+      uri: "testuri.com",
+      username: "u1",
+      rating: 5,
+    };
+    const recipes = await Recipe.addRating(data);
+    expect(recipes).toEqual({
+      id: expect.any(Number),
+      recipeURI: "testuri.com",
+      username: "u1",
+      starRating: 5,
+      createdAt: expect.any(Date),
+    });
+  });
+  //   test("notFound error with non-existing recipe", async function () {
+  //     let fakeuri = "DOESNTEXIST";
+  //     try {
+  //       await Recipe.get(fakeuri);
+  //     } catch (err) {
+  //       expect(err instanceof NotFoundError).toBeTruthy();
+  //     }
+  //   });
 });
