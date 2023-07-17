@@ -13,9 +13,13 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   //   await db.query("DELETE FROM companies");
   // noinspection SqlWithoutWhere
-  await db.query(
-    "TRUNCATE users, books, recipes_books, recipes_tried, notes, reviews"
-  );
+  await db.query("DELETE FROM recipes_books");
+  await db.query("DELETE FROM recipes_tried");
+  await db.query("DELETE FROM notes");
+  await db.query("DELETE FROM reviews");
+  await db.query("DELETE FROM recipes");
+  await db.query("DELETE FROM books");
+  await db.query("DELETE FROM users");
 
   await db.query(
     `
@@ -35,6 +39,11 @@ async function commonBeforeAll() {
   await db.query(`
   INSERT INTO books(title, username)
   VALUES ('book1', 'u1'), ('book2', 'u1'), ('book3', 'u2'), ('book4', 'u2')
+  `);
+
+  await db.query(`
+  INSERT INTO recipes(uri, label, image)
+  VALUES ('testuri.com', 'test recipe label', 'fakeimage.jpeg'), ('testuri2.com', 'test recipe label 2', 'fakeimage2.jpeg')
   `);
 }
 

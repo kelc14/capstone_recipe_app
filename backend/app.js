@@ -9,6 +9,7 @@ import { NotFoundError } from "./expressError.js";
 import { router as authenticationRoutes } from "./routes/authentication.js";
 import { router as userRoutes } from "./routes/users.js";
 import { router as bookRoutes } from "./routes/books.js";
+import { router as recipeRoutes } from "./routes/recipes.js";
 import { authenticateJWT } from "./middleware/auth.js";
 import morgan from "morgan";
 
@@ -22,6 +23,7 @@ app.use(authenticateJWT);
 app.use("/auth", authenticationRoutes);
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
+app.use("/recipe", recipeRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {

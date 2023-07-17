@@ -26,46 +26,59 @@ CREATE TABLE books (
 );
 
 CREATE TABLE recipes (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
+  label VARCHAR NOT NULL,
   image VARCHAR NOT NULL,
-  uri VARCHAR NOT NULL
+  uri VARCHAR PRIMARY KEY
 );
 
 
 CREATE TABLE recipes_books (
-  recipeId INTEGER NOT NULL
+  recipeURI VARCHAR NOT NULL
     REFERENCES recipes ON DELETE CASCADE,
   bookId INTEGER NOT NULL
     REFERENCES books ON DELETE CASCADE
 );
 
--- // tables: recipes_tried
+-- -- // tables: recipes_tried
 CREATE TABLE recipes_tried (
     id INTEGER NOT NULL PRIMARY KEY,
-  recipeId INTEGER NOT NULL
+  recipeURI VARCHAR NOT NULL
     REFERENCES recipes ON DELETE CASCADE,
   username VARCHAR(25) NOT NULL
     REFERENCES users ON DELETE CASCADE
 );
 
--- // tables: notes
+-- -- // tables: notes
 CREATE TABLE notes (
     id INTEGER NOT NULL PRIMARY KEY,
-  recipeId INTEGER NOT NULL
+  recipeURI VARCHAR NOT NULL
     REFERENCES recipes ON DELETE CASCADE,
   username VARCHAR(25) NOT NULL
     REFERENCES users ON DELETE CASCADE,
-noteText VARCHAR NOT NULL
+noteText VARCHAR NOT NULL,
+  createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
 );
--- // tables reviews
+
+-- -- // tables reviews
 CREATE TABLE reviews (
     id INTEGER NOT NULL PRIMARY KEY,
-  recipeId INTEGER NOT NULL
+  recipeURI VARCHAR NOT NULL
     REFERENCES recipes ON DELETE CASCADE,
   username VARCHAR(25) NOT NULL
     REFERENCES users ON DELETE CASCADE,
 reviewText VARCHAR NOT NULL,
-starRating INTEGER CHECK (starRating >= 0)
+  createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 
 );
+
+-- tables ratings   (STARS SEPARATE FROM REVIEWS)
+CREATE TABLE ratings (
+  id INTEGER NOT NULL PRIMARY KEY,
+  recipeURI VARCHAR NOT NULL
+    REFERENCES recipes ON DELETE CASCADE,
+    username VARCHAR(25) NOT NULL
+    REFERENCES users ON DELETE CASCADE,
+  starRating INTEGER CHECK (starRating >=0),
+  createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)
