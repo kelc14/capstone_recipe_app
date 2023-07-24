@@ -15,6 +15,7 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM recipes_books");
   await db.query("DELETE FROM recipes_tried");
+  await db.query("DELETE FROM calendars");
   await db.query("DELETE FROM notes");
   await db.query("DELETE FROM reviews");
   await db.query("DELETE FROM recipes");
@@ -44,6 +45,15 @@ async function commonBeforeAll() {
   await db.query(`
   INSERT INTO recipes(uri, label, image)
   VALUES ('testuri.com', 'test recipe label', 'fakeimage.jpeg'), ('testuri2.com', 'test recipe label 2', 'fakeimage2.jpeg')
+  `);
+
+  await db.query(`
+  INSERT INTO ratings (recipeURI, username, starRating)
+  VALUES ('testuri2.com', 'u1', 3)
+  `);
+  await db.query(`
+  INSERT INTO calendars (username)
+  VALUES ('u1')
   `);
 }
 

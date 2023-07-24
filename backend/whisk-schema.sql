@@ -5,6 +5,7 @@
 -- * recipes
 -- * recipes_books
 -- * recipes_tried
+-- * calendar
 -- * notes
 -- * reviews
 
@@ -46,6 +47,25 @@ CREATE TABLE recipes_tried (
     REFERENCES recipes ON DELETE CASCADE,
   username VARCHAR(25) NOT NULL
     REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE calendars (
+   username VARCHAR(25) NOT NULL
+    REFERENCES users ON DELETE CASCADE,
+   monday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   tuesday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   wednesday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   thursday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   friday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   saturday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE,
+   sunday VARCHAR DEFAULT null
+    REFERENCES recipes ON DELETE CASCADE
 );
 
 -- -- // tables: notes

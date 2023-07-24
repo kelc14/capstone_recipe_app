@@ -1,6 +1,7 @@
 "use strict";
 
 import db from "../db.js";
+import Calendar from "./calendar.js";
 import bcrypt from "bcrypt";
 import {
   NotFoundError,
@@ -91,6 +92,9 @@ class User {
 
     const user = result.rows[0];
 
+    // create user calendar
+    await Calendar.createCalendar({ username });
+
     return user;
   }
 
@@ -108,7 +112,9 @@ class User {
 
   /** Given a username, return data about user.
    *
-   * Returns { username, firstName, lastName, isAdmin }
+   * Returns { username, firstName, lastName, isAdmin, books: [{id, title}] }
+   *
+   * books returns empty array if user has not created any yet
    *
    * Throws NotFoundError if user not found.
    **/
@@ -120,7 +126,7 @@ class User {
             lastName AS "lastName", 
             email, 
             isAdmin AS "isAdmin", 
-            json_agg(json_build_object('id', b.id, 'title',b.title)) AS books
+            COALESCE(json_agg(json_build_object('id', b.id, 'title',b.title)) FILTER (WHERE b.id IS NOT NULL), '[]') AS books
       FROM users AS u
       LEFT JOIN books as b
             ON b.username = u.username

@@ -4,11 +4,18 @@ import db from "../db";
 import User from "../models/user";
 import Book from "../models/book";
 import { createToken } from "../helpers/tokens";
+import Recipe from "../models/recipe";
+import Calendar from "../models/calendar";
 
 async function commonBeforeAll() {
-  await db.query(
-    "TRUNCATE users, books, recipes_books, recipes_tried, notes, reviews"
-  );
+  await db.query("DELETE FROM recipes_books");
+  await db.query("DELETE FROM recipes_tried");
+  await db.query("DELETE FROM notes");
+  await db.query("DELETE FROM calendars");
+  await db.query("DELETE FROM reviews");
+  await db.query("DELETE FROM recipes");
+  await db.query("DELETE FROM books");
+  await db.query("DELETE FROM users");
 
   await User.register({
     username: "u1",
@@ -37,6 +44,21 @@ async function commonBeforeAll() {
   await Book.new({ title: "book1", username: "u1" });
   await Book.new({ title: "book2", username: "u1" });
   await Book.new({ title: "book3", username: "u2" });
+  await Recipe.addToDB({
+    uri: "testuri.com",
+    label: "Test Recipe",
+    image: "test.png",
+  });
+  await Recipe.addToDB({
+    uri: "testuri2.com",
+    label: "Test Recipe 2",
+    image: "test2.png",
+  });
+  await Recipe.addToDB({
+    uri: "testuri3.com",
+    label: "Test Recipe 3",
+    image: "test3.png",
+  });
 }
 
 async function commonBeforeEach() {

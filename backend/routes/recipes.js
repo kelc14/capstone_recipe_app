@@ -1,6 +1,6 @@
 "use strict";
 
-/** Routes for books. */
+/** Routes for Recipes. */
 
 import express from "express";
 import {
@@ -53,41 +53,44 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
-/** GET / => { books: [{id, title, username} ... ]}
+/** GET / => { recipes: [{uri, label, image} ... ]}
  *
- * Retrieves a list of all books
+ * Retrieves a list of recipes from the Edamam API
  *
- * Authorization required: login - admin
+ * Authorization required: login
  */
 
-// router.get("/", ensureAdmin, async function (req, res, next) {
-//   try {
-//     const books = await Book.getAll();
-//     return res.json({ books });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+router.get("/", ensureLoggedIn, async function (req, res, next) {
+  try {
+    let recipes = await Recipe.getAll();
+    return res.json({ recipes });
+  } catch (err) {
+    return next(err);
+  }
+});
 
-// /** GET /[id] => { book }
-//  *
-//  * Returns { id, title, username, recipes: [...] }
-//  *
-//  * Authorization required: login - this user OR admin
-//  **/
+/** GET /[uri] => { recipe }
+ *
+ * Returns {  }
+ *
+ * Authorization required: login
+ **/
 
-// router.get("/:id", ensureLoggedIn, async function (req, res, next) {
-//   try {
-//     const book = await Book.get(req.params.id);
-//     if (res.locals.user.username === book.username || res.locals.user.isAdmin) {
-//       return res.json({ book });
-//     } else {
-//       throw new UnauthorizedError();
-//     }
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+// **** MIGHT WANT TO ADD AN ID TO THE RECIPE IN MY DATABASE SO THAT IT IS EASIER TO ADD TO URL PARAMS ...
+
+router.get("/:uri", ensureLoggedIn, async function (req, res, next) {
+  try {
+    if (res.locals.user.username === book.username || res.locals.user.isAdmin) {
+      const recipe = await Recipe.get(req.params.uri);
+
+      return res.json({ recipe });
+    } else {
+      throw new UnauthorizedError();
+    }
+  } catch (err) {
+    return next(err);
+  }
+});
 
 // /** PATCH /[username] { book } => { book }
 //  *

@@ -10,6 +10,9 @@ import { router as authenticationRoutes } from "./routes/authentication.js";
 import { router as userRoutes } from "./routes/users.js";
 import { router as bookRoutes } from "./routes/books.js";
 import { router as recipeRoutes } from "./routes/recipes.js";
+import { router as recipeAPIRoutes } from "./routes/recipesAPI.js";
+import { router as calendarRoutes } from "./routes/calendars.js";
+
 import { authenticateJWT } from "./middleware/auth.js";
 import morgan from "morgan";
 
@@ -20,10 +23,14 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
+/** ROUTES */
+
 app.use("/auth", authenticationRoutes);
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
 app.use("/recipe", recipeRoutes);
+app.use("/api/recipe", recipeAPIRoutes);
+app.use("/calendar", calendarRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
@@ -40,7 +47,5 @@ app.use(function (err, req, res, next) {
     error: { message, status },
   });
 });
-
-// module.exports = app;
 
 export default app;

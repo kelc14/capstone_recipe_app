@@ -56,9 +56,28 @@ class Book {
    *
    **/
 
+  // REEFERENCE ONLY static async get(username) {
+  //   const userRes = await db.query(
+  //     `SELECT u.username,
+  //           firstName AS "firstName",
+  //           lastName AS "lastName",
+  //           email,
+  //           isAdmin AS "isAdmin",
+  //           json_agg(json_build_object('id', b.id, 'title',b.title)) AS books
+  //     FROM users AS u
+  //     LEFT JOIN books as b
+  //           ON b.username = u.username
+  //       WHERE u.username = $1
+  //       GROUP BY u.username`,
+  //     [username]
+  // ******** add image thumbnails to this object -> 6 images from each book
+
   static async getUserBooks(username) {
     const result = await db.query(
-      `SELECT id, title, username FROM books WHERE username=$1`,
+      `SELECT b.id, b.title, b.username
+      FROM books AS b 
+      WHERE username=$1
+     `,
       [username]
     );
     return result.rows;
