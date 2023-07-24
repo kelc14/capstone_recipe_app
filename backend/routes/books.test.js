@@ -283,3 +283,192 @@ describe("DELETE /book/:id", function () {
     expect(response.statusCode).toEqual(401);
   });
 });
+
+/************************************** POST recipe/add ✓ 4/4 */
+describe("POST recipe/add", function () {
+  test("works for admin to add a recipe to user book", async function () {
+    // get a book id to test:
+    let book = await db.query("SELECT id, title, username FROM books");
+    let bookId = book.rows[0].id;
+
+    const response = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(response.body).toEqual({
+      added: {
+        bookId,
+        recipeURI: "testuri.com",
+      },
+    });
+  });
+  test("works for self user to add a recipe to user book", async function () {
+    // get a book id to test:
+    let book = await db.query("SELECT id, title, username FROM books");
+    let bookId = book.rows[0].id;
+
+    const response = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(response.body).toEqual({
+      added: {
+        bookId,
+        recipeURI: "testuri.com",
+      },
+    });
+  });
+
+  test("unauth for nonadmin", async function () {
+    // get a book id to test:
+    let book = await db.query("SELECT id, title, username FROM books");
+    let bookId = book.rows[0].id;
+
+    const response = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u3Token}`);
+    expect(response.statusCode).toEqual(401);
+  });
+
+  test("unauth error for unknown user", async function () {
+    // get a book id to test:
+    let book = await db.query("SELECT id, title, username FROM books");
+    let bookId = book.rows[0].id;
+
+    const response = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer unknownTOKEN`);
+    expect(response.statusCode).toEqual(401);
+  });
+  test("not found error for unknown bookid", async function () {
+    const response = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId: 0,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(response.statusCode).toEqual(404);
+  });
+});
+
+// /************************************** DELETE /book/remove ✓ 3/3  */
+describe("DELETE /book/remove", function () {
+  test("works for admin", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let bookId = books.rows[0].id;
+
+    // add a book first
+    const add = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
+
+    // test deleting it
+    const response = await request(app)
+      .delete(`/book/recipe/delete`)
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
+
+    expect(response.body).toEqual({
+      deleted: `recipe testuri.com from book ${bookId}`,
+    });
+  });
+
+  test("works for admin", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let bookId = books.rows[0].id;
+
+    // add a book first
+    const add = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
+
+    // test deleting it
+    const response = await request(app)
+      .delete(`/book/recipe/delete`)
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u1Token}`);
+
+    expect(response.body).toEqual({
+      deleted: `recipe testuri.com from book ${bookId}`,
+    });
+  });
+
+  test("unauth for non-self/ non-admin", async function () {
+    // get a book id to test:
+    let books = await db.query("SELECT id, title, username FROM books");
+    let bookId = books.rows[0].id;
+
+    // add a book first
+    const add = await request(app)
+      .post("/book/recipe/add")
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u2Token}`);
+
+    // test deleting it
+    const response = await request(app)
+      .delete(`/book/recipe/delete`)
+      .send({
+        bookId,
+        recipeURI: "testuri.com",
+      })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .set("authorization", `Bearer ${u3Token}`);
+
+    expect(response.statusCode).toEqual(401);
+  });
+});

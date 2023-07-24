@@ -157,4 +157,95 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
+/** POST / { book }  => { book }
+ *
+ * Adds a new user. This is not the registration endpoint --- instead, this is
+ * only for admin users to add new users. The new user being added can be an
+ * admin.
+ *
+ * This returns the newly created user and an authentication token for them:
+ *  {user: { username, firstName, lastName, email, isAdmin }, token }
+ *
+ * Authorization required: login - self or admin
+ **/
+
+router.post("/recipe/add", ensureLoggedIn, async function (req, res, next) {
+  try {
+    // check that user matches username for the book or is an Admin >
+
+    const book = await Book.get(req.body.bookId);
+    if (!book) return NotFoundError(`No book with id: ${req.params.id}`);
+
+    if (res.locals.user.username === book.username || res.locals.user.isAdmin) {
+      // // validate data:
+      // const { error, value } = bookSchema.validate(req.body, {
+      //   abortEarly: false,
+      // });
+      // if (error) {
+      //   const { details } = error;
+      //   const message = details.map((i) => i.message).join(",");
+      //   console.log("error", message);
+      //   throw new BadRequestError(message);
+      // }
+
+      const added = await Book.addRecipe(req.body);
+      return res.status(201).json({ added });
+    } else {
+      throw new UnauthorizedError();
+    }
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** POST / { book }  => { book }
+ *
+ * Adds a new user. This is not the registration endpoint --- instead, this is
+ * only for admin users to add new users. The new user being added can be an
+ * admin.
+ *
+ * This returns the newly created user and an authentication token for them:
+ *  {user: { username, firstName, lastName, email, isAdmin }, token }
+ *
+ * Authorization required: login - self or admin
+ **/
+
+router.delete(
+  "/recipe/delete",
+  ensureLoggedIn,
+  async function (req, res, next) {
+    try {
+      // check that user matches username for the book or is an Admin >
+
+      const book = await Book.get(req.body.bookId);
+      if (!book) return NotFoundError(`No book with id: ${req.params.id}`);
+
+      if (
+        res.locals.user.username === book.username ||
+        res.locals.user.isAdmin
+      ) {
+        // // validate data:
+        // const { error, value } = bookSchema.validate(req.body, {
+        //   abortEarly: false,
+        // });
+        // if (error) {
+        //   const { details } = error;
+        //   const message = details.map((i) => i.message).join(",");
+        //   console.log("error", message);
+        //   throw new BadRequestError(message);
+        // }
+
+        await Book.removeRecipe(req.body);
+        return res.status(201).json({
+          deleted: `recipe ${req.body.recipeURI} from book ${req.body.bookId}`,
+        });
+      } else {
+        throw new UnauthorizedError();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
 export { router };

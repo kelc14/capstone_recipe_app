@@ -180,7 +180,7 @@ describe("remove(id)", function () {
   });
 });
 
-/************************************** remove(id)  ✓ 2/2 */
+/************************************** addRecipe(recipeURI, bookId)  ✓ 3/3 */
 
 describe("addRecipe(recipeURI, bookId)", function () {
   test("works", async function () {
@@ -189,7 +189,7 @@ describe("addRecipe(recipeURI, bookId)", function () {
     let bookId = res.rows[0].id;
 
     // ==> find book by id
-    const added = await Book.addRecipe(bookId, "testuri.com");
+    const added = await Book.addRecipe({ bookId, recipeURI: "testuri.com" });
     expect(added).toEqual({
       bookId,
       recipeURI: "testuri.com",
@@ -198,7 +198,10 @@ describe("addRecipe(recipeURI, bookId)", function () {
 
   test("not found error for non-existent bookId", async function () {
     try {
-      const books = await Book.addRecipe(0, "testuri.com");
+      const books = await Book.addRecipe({
+        bookId: 0,
+        recipeURI: "testuri.com",
+      });
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
@@ -210,7 +213,58 @@ describe("addRecipe(recipeURI, bookId)", function () {
       let res = await db.query("SELECT id, title, username FROM books");
       let bookId = res.rows[0].id;
 
-      const books = await Book.addRecipe(bookId, "fakeuri");
+      const books = await Book.addRecipe({
+        bookId: bookId,
+        recipeURI: "fakeuri",
+      });
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** removeRecipe(recipeURI, bookId)  ✓ 3/3 */
+
+describe("remove(recipeURI, bookId)", function () {
+  test("works", async function () {
+    // get book id from db =>
+    let res = await db.query("SELECT id, title, username FROM books");
+    let bookId = res.rows[0].id;
+
+    let recipeURI = "testuri.com";
+
+    // add recipe to book before you remove:
+    await Book.addRecipe({ bookId, recipeURI });
+    // ==> remove recipe
+    const resp = await Book.removeRecipe({ bookId, recipeURI });
+
+    // check that it is not in the db
+    let secondResult = await db.query(
+      `SELECT * FROM recipes_books WHERE bookId='${bookId}' AND recipeURI='${recipeURI}'`
+    );
+    expect(secondResult.rows.length).toBe(0);
+  });
+
+  test("not found error for non-existent id", async function () {
+    try {
+      let recipeURI = "testuri.com";
+
+      // ==> remove recipe
+      const resp = await Book.removeRecipe({ bookId: 0, recipeURI });
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+  test("not found error for non-existent uri", async function () {
+    try {
+      // get book id from db =>
+      let res = await db.query("SELECT id, title, username FROM books");
+      let bookId = res.rows[0].id;
+
+      let recipeURI = "FAKEURI";
+
+      // ==> remove recipe
+      const resp = await Book.removeRecipe({ bookId, recipeURI });
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
