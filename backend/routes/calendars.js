@@ -72,7 +72,7 @@ router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
     let username = req.params.username;
     let calendar = await Calendar.get({ username });
     if (!calendar)
-      return NotFoundError(`No calendar for username: ${username}`);
+      return new NotFoundError(`No calendar for username: ${username}`);
 
     // check that user matches username from the book or is an Admin >
     if (

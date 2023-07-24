@@ -179,3 +179,40 @@ describe("remove(id)", function () {
     }
   });
 });
+
+/************************************** remove(id)  ✓ 2/2 */
+
+describe("addRecipe(recipeURI, bookId)", function () {
+  test("works", async function () {
+    // get book id from db =>
+    let res = await db.query("SELECT id, title, username FROM books");
+    let bookId = res.rows[0].id;
+
+    // ==> find book by id
+    const added = await Book.addRecipe(bookId, "testuri.com");
+    expect(added).toEqual({
+      bookId,
+      recipeURI: "testuri.com",
+    });
+  });
+
+  test("not found error for non-existent bookId", async function () {
+    try {
+      const books = await Book.addRecipe(0, "testuri.com");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found error for non-existent bookId", async function () {
+    try {
+      // get book id from db =>
+      let res = await db.query("SELECT id, title, username FROM books");
+      let bookId = res.rows[0].id;
+
+      const books = await Book.addRecipe(bookId, "fakeuri");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});

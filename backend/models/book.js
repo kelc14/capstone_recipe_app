@@ -144,6 +144,40 @@ class Book {
 
     if (!book) throw new NotFoundError(`No book with id: ${id}`);
   }
+
+  /** Add a recipe to a book */
+  static async addRecipe(bookId, recipeURI) {
+    // check that bookId exists first:
+    const book = await db.query(
+      `SELECT id
+               FROM books
+               WHERE id = $1`,
+      [bookId]
+    );
+    if (!book.rows[0]) throw new NotFoundError(`No book: ${bookId}`);
+
+    // check that recipe exists first:
+    const recipe = await db.query(
+      `SELECT uri
+               FROM recipes
+               WHERE uri = $1`,
+      [recipeURI]
+    );
+    if (!recipe.rows[0]) throw new NotFoundError(`No recipe: ${recipeURI}`);
+
+    // if yes to both, add recipe to book
+    let result = await db.query(
+      `
+    INSERT INTO recipes_books (recipeURI, bookId)
+    VALUES ($1, $2)
+    RETURNING bookId AS "bookId", recipeURI AS "recipeURI"
+    `,
+      [recipeURI, bookId]
+    );
+
+    const added = result.rows[0];
+    return added;
+  }
 }
 
 export default Book;

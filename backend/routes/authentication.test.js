@@ -30,6 +30,13 @@ describe("POST auth/login", function () {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
     expect(response.body).toEqual({
+      user: {
+        username: "u1",
+        firstName: "U1F",
+        lastName: "U1L",
+        email: "user1@user.com",
+        isAdmin: false,
+      },
       token: expect.any(String),
     });
   });
@@ -83,6 +90,13 @@ describe("POST auth/register", function () {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
     expect(response.body).toEqual({
+      user: {
+        username: "newUser",
+        firstName: "newFirst",
+        lastName: "newLast",
+        email: "email@email.com",
+        isAdmin: false,
+      },
       token: expect.any(String),
     });
   });
