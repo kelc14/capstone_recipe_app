@@ -15,10 +15,8 @@ class RecipeAPI {
    **/
   static async fetchRecipes(query) {
     try {
-      console.log(process.env.TEST);
-
       const recipeData = await axios.get(
-        `${BASE_URL}?type=public&q=${query}&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&random=true&field=uri&field=label&field=image
+        `https://api.edamam.com/api/recipes/v2?type=public&q=${query}&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&random=true&field=uri&field=label&field=image
         `
       );
       //   console.log(recipeData.data.hits);
@@ -36,8 +34,10 @@ class RecipeAPI {
    **/
   static async fetchRandomRecipes() {
     try {
+      console.log(process.env.TEST);
+
       const recipeData = await axios.get(
-        `${BASE_URL}?type=public&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&ingr=1%2B&random=true&field=uri&field=label&field=image
+        `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&ingr=1%2B&random=true&field=uri&field=label&field=image
         `
       );
 
@@ -59,7 +59,7 @@ class RecipeAPI {
 
     try {
       const recipeData = await axios.get(
-        `${BASE_URL}/by-uri?type=public&uri=${uri}&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&field=uri&field=label&field=image&field=source&field=url&field=yield&field=dietLabels&field=healthLabels&field=cautions&field=ingredientLines&field=ingredients&field=calories&field=totalWeight&field=totalTime&field=cuisineType&field=mealType&field=dishType&field=totalNutrients`
+        `https://api.edamam.com/api/recipes/v2/by-uri?type=public&uri=${uri}&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&field=uri&field=label&field=image&field=source&field=url&field=yield&field=dietLabels&field=healthLabels&field=cautions&field=ingredientLines&field=ingredients&field=calories&field=totalWeight&field=totalTime&field=cuisineType&field=mealType&field=dishType&field=totalNutrients`
       );
       return recipeData.data.hits[0].recipe;
     } catch (e) {
