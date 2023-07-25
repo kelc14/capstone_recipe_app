@@ -15,11 +15,13 @@ class RecipeAPI {
    **/
   static async fetchRecipes(query) {
     try {
+      console.log(process.env.TEST);
+
       const recipeData = await axios.get(
         `${BASE_URL}?type=public&q=${query}&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&random=true&field=uri&field=label&field=image
         `
       );
-      console.log(recipeData.data.hits);
+      //   console.log(recipeData.data.hits);
       return recipeData.data.hits;
     } catch (e) {
       throw new NotFoundError();
