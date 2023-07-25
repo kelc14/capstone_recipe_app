@@ -198,6 +198,60 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
+
+  /** User interactions with recipe */
+  static async addUserRecipe(username, recipeURI) {
+    let res = await db.query(
+      ` INSERT INTO user_recipes (username, recipeuri)
+      VALUES ($1, $2)
+      RETURNING username, recipeURI AS "recipeURI", notes, tried, rating
+      `,
+      [username, recipeURI]
+    );
+    return res.rows[0];
+  }
+
+  static async updateUserRecipeTried(username, recipeURI, tried) {
+    let res = await db.query(
+      `UPDATE user_recipes 
+    SET tried=$1
+    WHERE username=$2 AND recipeURI=$3
+    RETURNING username, recipeURI AS "recipeURI", notes, tried, rating
+    `,
+      [tried, username, recipeURI]
+    );
+    return res.rows[0];
+  }
+
+  static async updateUserRecipeNotes(username, recipeURI, notes) {
+    let res = await db.query(
+      `UPDATE user_recipes 
+    SET notes=$1
+    WHERE username=$2 AND recipeURI=$3
+    RETURNING username, recipeURI AS "recipeURI", notes, tried, rating
+    `,
+      [notes, username, recipeURI]
+    );
+    return res.rows[0];
+  }
+  static async updateUserRecipeRating(username, recipeURI, rating) {
+    let res = await db.query(
+      `UPDATE user_recipes 
+    SET rating=$1
+    WHERE username=$2 AND recipeURI=$3
+    RETURNING username, recipeURI AS "recipeURI", notes, tried, rating
+    `,
+      [rating, username, recipeURI]
+    );
+    return res.rows[0];
+  }
+  // username VARCHAR(25) NOT NULL
+  // REFERENCES users ON DELETE CASCADE,
+  // recipeURI VARCHAR NOT NULL
+  // REFERENCES recipes ON DELETE CASCADE,
+  // notes VARCHAR NOT NULL DEFAULT "Add your notes here...",
+  // tried BOOLEAN NOT NULL DEFAULT false,
+  // rating INTEGER
 }
 
 export default User;

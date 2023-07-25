@@ -124,4 +124,25 @@ router.delete("/:username", ensureSelfOrAdmin, async function (req, res, next) {
   }
 });
 
+/** GET /[username] => { user }
+ *
+ * Returns { username, firstName, lastName, isAdmin, jobs: [jobId of applied jobs] }
+ *
+ * Authorization required: login - this user OR admin
+ **/
+
+// router.post(
+//   "/:username/recipe",
+//   ensureSelfOrAdmin,
+//   async function (req, res, next) {
+//     let { recipeURI, username } = req.body;
+//     console.log(recipeURI);
+//     try {
+//       const user_recipe = await User.addUserRecipe(username, recipeURI);
+//       return res.status(201).json({ user_recipe });
+//     } catch (err) {
+//       return next(err);
+//     }
+//   }
+
 export { router };

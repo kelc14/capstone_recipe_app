@@ -40,6 +40,16 @@ CREATE TABLE recipes_books (
     REFERENCES books ON DELETE CASCADE
 );
 
+CREATE TABLE user_recipes (
+  username VARCHAR(25) NOT NULL
+    REFERENCES users ON DELETE CASCADE,
+  recipeURI VARCHAR NOT NULL
+    REFERENCES recipes ON DELETE CASCADE,
+  notes VARCHAR NOT NULL DEFAULT 'Add your notes here...',
+  tried BOOLEAN NOT NULL DEFAULT false,
+  rating INTEGER
+);
+
 -- -- // tables: recipes_tried
 CREATE TABLE recipes_tried (
     id INTEGER NOT NULL PRIMARY KEY,
