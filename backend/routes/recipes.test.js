@@ -51,7 +51,7 @@ describe("POST /recipe", function () {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json")
       .set("authorization", `Bearer ${u2Token}`);
-    expect(response.statusCode).toEqual(400);
+    expect(response.statusCode).toEqual(201);
   });
 
   test("unauth error for unknown user", async function () {

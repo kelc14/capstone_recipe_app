@@ -41,7 +41,7 @@ class RecipeAPI {
 
       return recipeData.data.hits;
     } catch (e) {
-      console.log(e);
+      console.log(e.data);
       throw new NotFoundError();
     }
   }
