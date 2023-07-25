@@ -91,8 +91,23 @@ class Book {
    **/
 
   static async get(id) {
+    // SELECT b.id, b.title, b.username, rb.recipeURI, r.image, r.label
+    // FROM books AS b
+    // JOIN recipes_books AS rb
+    // ON b.id = rb.bookId
+    // JOIN recipes AS r
+    // ON rb.recipeURI=r.uri
+    // WHERE id=23;
+
     const bookRes = await db.query(
-      `SELECT id, title, username FROM books WHERE id=$1`,
+      `SELECT b.id, 
+        b.title, 
+        b.username, 
+        COALESCE(json_agg(json_build_object('uri', r.uri, 'image', r.image, 'label', r.label)) FILTER (WHERE r.uri IS NOT NULL), '[]') AS recipes
+         FROM books AS b 
+         LEFT JOIN recipes_books AS rb ON b.id = rb.bookId 
+         LEFT JOIN recipes AS r ON rb.recipeURI = r.uri
+         WHERE id = $1 GROUP BY b.id`,
       [id]
     );
     const book = bookRes.rows[0];

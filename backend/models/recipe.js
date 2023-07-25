@@ -89,7 +89,7 @@ class Recipe {
       [uri]
     );
     if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate recipe: ${uri}`);
+      return duplicateCheck.rows[0];
     }
 
     // if the recipe does not exist, add to DB

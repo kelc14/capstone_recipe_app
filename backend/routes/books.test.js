@@ -135,7 +135,12 @@ describe("GET /book/:id", function () {
       .set("authorization", `Bearer ${u2Token}`);
 
     expect(response.body).toEqual({
-      book: { title: "book1", username: "u1", id: expect.any(Number) },
+      book: {
+        title: "book1",
+        username: "u1",
+        id: expect.any(Number),
+        recipes: [],
+      },
     });
   });
 
@@ -150,7 +155,12 @@ describe("GET /book/:id", function () {
       .set("authorization", `Bearer ${u1Token}`);
 
     expect(response.body).toEqual({
-      book: { title: "book1", username: "u1", id: expect.any(Number) },
+      book: {
+        title: "book1",
+        username: "u1",
+        id: expect.any(Number),
+        recipes: [],
+      },
     });
   });
 

@@ -118,6 +118,7 @@ describe("get(id)", function () {
       id,
       title: "book1",
       username: "u1",
+      recipes: [],
     });
   });
 
