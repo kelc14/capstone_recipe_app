@@ -4,8 +4,6 @@
 
 import dotenv from "dotenv";
 dotenv.config();
-import colors from "colors";
-// require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
 
