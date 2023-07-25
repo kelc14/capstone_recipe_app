@@ -34,8 +34,6 @@ class RecipeAPI {
    **/
   static async fetchRandomRecipes() {
     try {
-      console.log(process.env.TEST);
-
       const recipeData = await axios.get(
         `https://api.edamam.com/api/recipes/v2?type=public&app_id=${process.env.API_APP_ID}&app_key=${process.env.API_APP_KEY}&imageSize=REGULAR&ingr=1%2B&random=true&field=uri&field=label&field=image
         `
@@ -43,6 +41,7 @@ class RecipeAPI {
 
       return recipeData.data.hits;
     } catch (e) {
+      console.log(e);
       throw new NotFoundError();
     }
   }
